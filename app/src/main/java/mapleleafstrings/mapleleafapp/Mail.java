@@ -42,9 +42,9 @@ public class Mail extends javax.mail.Authenticator {
 
 
     public Mail() {
-        _host = "smtp.gmail.com"; // default smtp server
-        _port = "465"; // default smtp port
-        _sport = "465"; // default socketfactory port
+        _host = "mail.steveseifried.com"; // default smtp server
+        _port = "443"; // default smtp port
+        _sport = "443"; // default socketfactory port
 
         _user = ""; // username
         _pass = ""; // password
@@ -137,10 +137,10 @@ public class Mail extends javax.mail.Authenticator {
             props.put("mail.smtp.auth", "true");
         }
 
-        props.put("mail.smtp.port", _port);
-        props.put("mail.smtp.socketFactory.port", _sport);
-        props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
-        props.put("mail.smtp.socketFactory.fallback", "false");
+        // avoid hang by setting timeout; 60 seconds
+        props.put("mail.smtp.timeout", "60000");
+        props.put("mail.smtp.connectiontimeout", "60000");
+        props.put("mail.smtp.starttls.enable", true);
 
         return props;
     }
@@ -168,6 +168,4 @@ public class Mail extends javax.mail.Authenticator {
         // TODO Auto-generated method stub
         this._subject=string;
     }
-
-    // more of the getters and setters …..
 }

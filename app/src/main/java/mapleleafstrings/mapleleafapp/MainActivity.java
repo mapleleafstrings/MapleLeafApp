@@ -1,6 +1,8 @@
 package mapleleafstrings.mapleleafapp;
 
+import android.app.ActionBar;
 import android.app.AlertDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -12,6 +14,8 @@ import android.view.MenuItem;
 import android.widget.Button;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.content.DialogInterface;
 import android.util.Log;
@@ -19,48 +23,32 @@ import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
-    // Put declarations here
+    // Declarations
     AlertDialog mdialog;
+    LinearLayout linearLayout;
 
-    @Override
-    public void onCreate(Bundle icicle) {
-        super.onCreate(icicle);
-        setContentView(R.layout.activity_main);
+    // List of menu buttons and sub menus. Adding to any of these lists adds a button to
+    // that menu; to assign a function assign a function to the button in the
+    // assignButtonFunction() method.
+    String[] MainMenuButtons = {"Check-In Return"};
+    String[] CheckInButtons = {"Pending Return", "Manual Return", "Main Menu"};
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            FloatingActionButton addImage = (FloatingActionButton) findViewById(R.id.fab);
-            public void onClick(View view) {
-                Mail m = new Mail("gmailusername@gmail.com", "password");
+    // Menu state: used for tracking the back feature
+    String[] CurrentButtonList;
 
-                String[] toArr = {"bla@bla.com", "lala@lala.com"};
-                m.setTo(toArr);
-                m.setFrom("wooo@wooo.com");
-                m.setSubject("This is an email sent using my Mail JavaMail wrapper from an Android device.");
-                m.setBody("Email body.");
 
-                try {
-                    //m.addAttachment("/sdcard/filelocation");
-
-                    if(m.send()) {
-                        Toast.makeText(MainActivity.this, "Email was sent successfully.", Toast.LENGTH_LONG).show();
-                    } else {
-                        Toast.makeText(MainActivity.this, "Email was not sent.", Toast.LENGTH_LONG).show();
-                    }
-                } catch(Exception e) {
-                    //Toast.makeText(MailApp.this, "There was a problem sending the email.", Toast.LENGTH_LONG).show();
-                    Log.e("MailApp", "Could not send email", e);
-                }
-            }
-        });
-    }
-    /*
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         //Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         //setSupportActionBar(toolbar);
+
+        // Grabs where to put the buttons from content_main.xml
+        linearLayout = (LinearLayout)findViewById(R.id.linearLayout2);
+
+        // Create the initial menu on the activity start
+        populateButtons(MainMenuButtons);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -70,7 +58,72 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-    */
+
+    // Creates buttons on the menu, based on a passed-in array of buttons
+    public void populateButtons(String[] buttonList){
+        // Update the current button state
+        CurrentButtonList = buttonList;
+
+        // Loops through all buttons declared in MainMenuButtons[] and
+        // creates them.
+        for (int i = 0; i < buttonList.length; i++){
+            Button b = new Button(this);
+            b.setLayoutParams(new ActionBar.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.MATCH_PARENT));
+            b.setId(i);
+            b.setText(buttonList[i]);
+            assignButtonFunction(b);
+            linearLayout.addView(b);
+        }
+    }
+
+    // Method that assigns functions to dynamically generated buttons, based
+    // on the text written on the button.
+    // Can probably be handled in a cleaner way than an if/else block, but
+    // suits the needs of the program for now
+    public void assignButtonFunction(Button b){
+        if (b.getText() == "Check-In Return") {
+            b.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    removeButtons(CurrentButtonList);
+                    populateButtons(CheckInButtons);
+                }
+            });
+        } else if(b.getText() == "Main Menu") {
+            b.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    removeButtons(CurrentButtonList);
+                    populateButtons(MainMenuButtons);
+                }
+            });
+        } else if(b.getText() == "Pending Return") {
+            //TODO: Write things here
+        }else if(b.getText() == "Manual Return") {
+            final Intent ManualReturnIntent = new Intent(this, ManualReturnActivity.class);
+
+            b.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    removeButtons(CurrentButtonList);
+                    populateButtons(MainMenuButtons);
+                    startActivity(ManualReturnIntent);
+                }
+            });
+        } else {
+            //TODO: Write what to do if there is no function assigned for the button
+        }
+    }
+
+    // Simple method for removing buttons from view
+    // Call this whenever transitioning between new menus
+    public void removeButtons(String[] buttonList){
+        for (int i = 0; i < buttonList.length; i++){
+            View v = linearLayout.findViewById(i);
+            linearLayout.removeView(v);
+        }
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -97,6 +150,7 @@ public class MainActivity extends AppCompatActivity {
     // Prototype of a simple dialogue window
     // TODO: Update comment once fully finished
     private void createYesNoDialogue(String displayText, String confirmText, String cancelText){
+        removeButtons(MainMenuButtons);
         mdialog = new AlertDialog.Builder(this)
             .setTitle(getResources().getString(R.string.app_name))
             // The message shown in the main body of the window
@@ -116,7 +170,8 @@ public class MainActivity extends AppCompatActivity {
 
         // Hackwork to force the confirm/cancel button order
         //TODO: Test on other devices, make sure this isn't broken. Can be removed
-        //TODO:    it becomes problematic, buttons just won't look as good.
+        //TODO: if it becomes problematic, buttons just won't look as good.
+
         Button positiveButton = (Button) mdialog.findViewById(android.R.id.button1);
         Button negativeButton = (Button) mdialog.findViewById(android.R.id.button2);
         // Get the parent ViewGroup
@@ -139,6 +194,22 @@ public class MainActivity extends AppCompatActivity {
         mdialog.getWindow().addFlags(WindowManager.LayoutParams.FLAG_BLUR_BEHIND);
     }
 
+    // Programatically create the initial activity menu
+    private void populateStartMenu(){
+        // TODO: Write code here
+    }
+
+    // Clear any buttons that might be in the start menu;
+    // mainly for the purpose of traversing menus
+    private void wipeStartMenu(){
+        // TODO: Write code here
+    }
+
+    // Adds and removes buttons in the main menu based on user interaction
+    private void menuHandler(){
+
+    }
+
     // Debug method for testing emails sent from apps
     private void sendTestEmail(String recipients, String subject, String body){
         // Test command to make sure things are working
@@ -147,7 +218,11 @@ public class MainActivity extends AppCompatActivity {
 
         // Email Send Attempt
         try {
-            new RetrieveBackgroundTask().execute();
+            // Creates the thread that sends the email
+            // TODO: Make the name make more sense and add error handling
+            // Possible error handling solution at:
+            //   http://stackoverflow.com/questions/1739515/asynctask-and-error-handling-on-android
+            new RetrieveBackgroundTask().execute(); // Working but has no GUI error feedback
         } catch (Exception e) {
             Log.e("SendEmail", e.getMessage(), e);
         }

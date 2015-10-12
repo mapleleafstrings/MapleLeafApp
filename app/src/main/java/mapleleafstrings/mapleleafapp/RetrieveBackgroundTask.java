@@ -1,6 +1,9 @@
 package mapleleafstrings.mapleleafapp;
 
 import android.os.AsyncTask;
+import android.util.Log;
+import android.widget.Toast;
+
 /**
  * ========================= RetrieveBackgroundTask.java ===============================
  *  Creates a seperate thread to run a task in its own process (basically creates a
@@ -14,21 +17,58 @@ public class RetrieveBackgroundTask extends AsyncTask<String, Integer, Long> {
 
     @Override
     protected Long doInBackground(String... urls){
-        try{
-            EmailSender2Test sender = new EmailSender2Test();
-            sender.sendEmail();
-        } catch (Exception e) {
-            //TODO: Populate this exception
+
+        Mail m = new Mail("christian@steveseifried.com", "stevewrote98");
+
+        String[] toArr = {"christian@steveseifried.com"};
+        m.setTo(toArr);
+        m.setFrom("returns@mapleleafstrings.com");
+        m.setSubject("Sample Return Email");
+        m.setBody("Email body.");
+
+        try {
+            if(m.send()) {
+                Log.e("MailApp", "Mail Sent Successfully");
+            } else {
+                Log.e("MailApp", "Email was not sent.");
+            }
+        } catch(Exception e) {
+            //Toast.makeText(MailApp.this, "There was a problem sending the email.", Toast.LENGTH_LONG).show();
+            Log.e("MailApp", "Could not send email; ", e);
         }
 
         return null;
     }
 
+    protected Boolean sendMailInBackground(){
+        Mail m = new Mail("christian@steveseifried.com", "stevewrote98");
+
+        String[] toArr = {"christian@steveseifried.com"};
+        m.setTo(toArr);
+        m.setFrom("returns@mapleleafstrings.com");
+        m.setSubject("Sample Return Email");
+        m.setBody("Email body.");
+
+        try {
+            if(m.send()) {
+                Log.e("MailApp", "Mail Sent Successfully");
+                return true;
+            } else {
+                Log.e("MailApp", "Email was not sent.");
+                return false;
+            }
+        } catch(Exception e) {
+            //Toast.makeText(MailApp.this, "There was a problem sending the email.", Toast.LENGTH_LONG).show();
+            Log.e("MailApp", "Could not send email; ", e);
+            return false;
+        }
+    }
+
     protected void onProgressUpdate(Integer... progress) {
-        //TODO: Write Progress Update Code
+        // Placeholder comment
     }
 
     protected void onPostExecute(Long result) {
-        //TODO: Write Post Execute Code
+        // Placeholder comment
     }
 }
