@@ -27,4 +27,7 @@ dependencies {
     compile files('C:/Maple Leaf Projects/MapleLeafApp/libs/activation.jar')
     compile files('C:/Maple Leaf Projects/MapleLeafApp/libs/additionnal.jar')
     compile files('C:/Maple Leaf Projects/MapleLeafApp/libs/mail.jar')
+    compile files('S:/Maple Leaf Projects/MapleLeafApp/libs/activation.jar')
+    compile files('S:/Maple Leaf Projects/MapleLeafApp/libs/mail.jar')
+    compile files('S:/Maple Leaf Projects/MapleLeafApp/libs/additionnal.jar')
 }
