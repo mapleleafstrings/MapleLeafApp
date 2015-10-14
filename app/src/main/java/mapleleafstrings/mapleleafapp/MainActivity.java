@@ -57,6 +57,15 @@ public class MainActivity extends AppCompatActivity {
                 createYesNoDialogue("Send Test Email?", "Send", "Cancel");
             }
         });
+
+        // PHP SQL server test button
+        FloatingActionButton phpTest = (FloatingActionButton)findViewById(R.id.phpTest);
+        phpTest.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view){
+                phpSQLTest();
+            }
+        });
     }
 
     // Creates buttons on the menu, based on a passed-in array of buttons
@@ -192,6 +201,11 @@ public class MainActivity extends AppCompatActivity {
         layoutParams.dimAmount = 0.9f;
         mdialog.getWindow().setAttributes(layoutParams);
         mdialog.getWindow().addFlags(WindowManager.LayoutParams.FLAG_BLUR_BEHIND);
+    }
+
+    // Update the php server with arbitrary test values
+    private void phpSQLTest(){
+        //TODO: Code goes here
     }
 
     // Programatically create the initial activity menu
