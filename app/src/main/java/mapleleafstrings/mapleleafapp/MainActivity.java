@@ -2,6 +2,7 @@ package mapleleafstrings.mapleleafapp;
 
 import android.app.ActionBar;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -20,6 +21,18 @@ import android.widget.TextView;
 import android.content.DialogInterface;
 import android.util.Log;
 import android.widget.Toast;
+import org.json.JSONObject;
+
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.net.URL;
+import java.net.URLConnection;
+import java.net.URLEncoder;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -205,7 +218,11 @@ public class MainActivity extends AppCompatActivity {
 
     // Update the php server with arbitrary test values
     private void phpSQLTest(){
-        //TODO: Code goes here
+        //TODO: Get this securely
+        String username = "elecban_steve";
+        String password = "D4t4b4se";
+
+        new updateSQLDatabase(this).execute(username,password);
     }
 
     // Programatically create the initial activity menu

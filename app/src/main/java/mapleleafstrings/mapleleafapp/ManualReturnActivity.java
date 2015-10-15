@@ -40,15 +40,27 @@ public class ManualReturnActivity extends AppCompatActivity {
     String currentDate;
     LinearLayout linearLayout;
 
-    String recievedDate, recievedBy, recievedFrom, carrier, boxNumber,
-            boxDimensions, damageDescription, returnReason;
-    String[] trackingNumbers, privateLabels, returnedItems, serialNumbers;
+    String recievedDate, recievedBy, recievedFrom, otherCarrier, boxNumber,
+            damageDescription, returnReason = "";
+    int carrierRadioState = 0;
+    Boolean isDamaged = false;
+    String[] trackingNumbers, privateLabels, returnedItems, serialNumbers,
+            boxDimensions;
 
     // List of ID values to assign to entry fields for saving
     HashMap<String, Integer> fieldIDList = new HashMap<String, Integer>(){{
         put("byField", 1000);
         put("fromField", 1001);
         put("dateField", 1002);
+        put("carrierRadio", 1003);
+        put("otherField", 1004);
+        put("numberField", 1005);
+        put("trackingTable", 1006);
+        put("dimTable", 1007);
+        put("damageField", 1008);
+        put("labelTable", 1009);
+        put("itemTable", 1010);
+        put("reasonField", 1011);
     }};
 
     // A list of data field pages to make
@@ -123,7 +135,7 @@ public class ManualReturnActivity extends AppCompatActivity {
     // Generates the next data entry field(s) and saves information
     // from the current fields.
     //TODO: Research how to do this with less spaghetti code
-    public void generateFields(int currentEntryIndex){
+    public void generateFields(final int currentEntryIndex){
         // Empty the layout view for fresh populating
         clearAllFields();
 
@@ -175,6 +187,7 @@ public class ManualReturnActivity extends AppCompatActivity {
             EditText rb = new EditText(this);
             setSingleLineRules(rb);
             rb.setId(fieldIDList.get("byField"));
+            rb.setText(recievedBy);
             linearLayout.addView(rb);
 
             // Received From label
@@ -186,6 +199,7 @@ public class ManualReturnActivity extends AppCompatActivity {
             EditText rf = new EditText(this);
             setSingleLineRules(rf);
             rf.setId(fieldIDList.get("fromField"));
+            rf.setText(recievedFrom);
             linearLayout.addView(rf);
 
         } else if(field == "Carrier, Boxes, and Tracking"){
@@ -193,6 +207,11 @@ public class ManualReturnActivity extends AppCompatActivity {
             TextView t = new TextView(this);
             t.setText("Shipping Carrier for Returned Package:");
             linearLayout.addView(t);
+
+            // Layout for radio buttons and text field
+            LinearLayout radioLayout = new LinearLayout(this);
+            radioLayout.setClickable(true);
+            radioLayout.setFocusableInTouchMode(true);
 
             // Carrier radio button
             final RadioButton[] crb = new RadioButton[3];
@@ -211,7 +230,16 @@ public class ManualReturnActivity extends AppCompatActivity {
             crg.addView(crb[2]);
             crb[2].setText("Other");
 
-            linearLayout.addView(crg);
+            // The 'other' edit text
+            EditText cre = new EditText(this);
+            setSingleLineRules(cre);
+            // Can only be edited when the "Other" button is selected
+            //TODO: Populate
+
+            radioLayout.addView(crg);
+            radioLayout.addView(cre);
+
+            linearLayout.addView(radioLayout);
 
             // Box Number label
             TextView nt = new TextView(this);
@@ -246,6 +274,8 @@ public class ManualReturnActivity extends AppCompatActivity {
             // Tracking Number table
             EditText tl = new EditText(this);
             setTextTableRules(tl);
+            tl.append("lineTest");
+            tl.append("lineTest2");
             linearLayout.addView(tl);
 
         } else if(field == "BoxDimensions"){
@@ -254,42 +284,63 @@ public class ManualReturnActivity extends AppCompatActivity {
             t.setText("(Optional) Specify the dimensions of the returned boxes:");
             linearLayout.addView(t);
 
-            // New linear layout for dimensions
-            LinearLayout dimensionLayout = new LinearLayout(this);
-            dimensionLayout.setOrientation(LinearLayout.HORIZONTAL);
-            dimensionLayout.setClickable(true);
-            dimensionLayout.setFocusable(true);
-            dimensionLayout.setGravity(Gravity.CENTER);
+            // Add a sub-layout with two buttons for adding and removing from the table
+            LinearLayout buttonSubLayout = new LinearLayout(this);
+            buttonSubLayout.setClickable(true);
+            buttonSubLayout.setFocusableInTouchMode(true);
 
-            // Field 1
-            EditText e1 = new EditText(this);
-            e1.setWidth(100);
-            setSingleLineRules(e1);
-            dimensionLayout.addView(e1);
+            Button addButton = new Button(this);
+            addButton.setText("Add");
+            buttonSubLayout.addView(addButton);
 
-            // Label 1
-            TextView l1 = new TextView(this);
-            l1.setText("x");
-            dimensionLayout.addView(l1);
+            Button removeButton = new Button(this);
+            removeButton.setText("Remove");
+            buttonSubLayout.addView(removeButton);
 
-            // Field 2
-            EditText e2 = new EditText(this);
-            e2.setWidth(100);
-            setSingleLineRules(e2);
-            dimensionLayout.addView(e2);
+            linearLayout.addView(buttonSubLayout);
 
-            // Label 2
-            TextView l2 = new TextView(this);
-            l2.setText("x");
-            dimensionLayout.addView(l2);
+            // Box Dimension table
+            EditText bde = new EditText(this);
+            setTextTableRules(bde);
+            linearLayout.addView(bde);
 
-            // Field 3
-            EditText e3 = new EditText(this);
-            e3.setWidth(100);
-            setSingleLineRules(e3);
-            dimensionLayout.addView(e3);
-
-            linearLayout.addView(dimensionLayout);
+            // Save for formatting the table dialog
+//            // New linear layout for dimensions
+//            LinearLayout dimensionLayout = new LinearLayout(this);
+//            dimensionLayout.setOrientation(LinearLayout.HORIZONTAL);
+//            dimensionLayout.setClickable(true);
+//            dimensionLayout.setFocusable(true);
+//            dimensionLayout.setGravity(Gravity.CENTER);
+//
+//            // Field 1
+//            EditText e1 = new EditText(this);
+//            e1.setWidth(100);
+//            setSingleLineRules(e1);
+//            dimensionLayout.addView(e1);
+//
+//            // Label 1
+//            TextView l1 = new TextView(this);
+//            l1.setText("x");
+//            dimensionLayout.addView(l1);
+//
+//            // Field 2
+//            EditText e2 = new EditText(this);
+//            e2.setWidth(100);
+//            setSingleLineRules(e2);
+//            dimensionLayout.addView(e2);
+//
+//            // Label 2
+//            TextView l2 = new TextView(this);
+//            l2.setText("x");
+//            dimensionLayout.addView(l2);
+//
+//            // Field 3
+//            EditText e3 = new EditText(this);
+//            e3.setWidth(100);
+//            setSingleLineRules(e3);
+//            dimensionLayout.addView(e3);
+//
+//            linearLayout.addView(dimensionLayout);
 
         } else if(field == "IsDamaged"){
             // Damage Confirmation label
@@ -304,19 +355,117 @@ public class ManualReturnActivity extends AppCompatActivity {
             damageLayout.setFocusable(true);
             damageLayout.setGravity(Gravity.CENTER);
 
-            // Increment the index by an additional amount if "no" is selected
+            // Add a sub-layout with two buttons for confirming yes/no
+            LinearLayout buttonSubLayout = new LinearLayout(this);
+            buttonSubLayout.setClickable(true);
+            buttonSubLayout.setFocusableInTouchMode(true);
+
+            Button yesButton = new Button(this);
+            yesButton.setText("Yes");
+            // If yes, bring up the photography application with prompts for taking
+            // pictures of damage
+            yesButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    isDamaged = true;
+
+                    // Just move to the next section for now
+                    goToNextFields();
+                    reshowNextButton();
+                }
+            });
+            buttonSubLayout.addView(yesButton);
+
+            Button noButton = new Button(this);
+            noButton.setText("No");
+            // Increment the index by an additional amount if "no" is selected, and
+            // generate the next non-damage fields
+            noButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    isDamaged = false;
+
+                    // This is incrementing the global var currentEntrySTATE and not the internal
+                    // final var currentEntryIndex. A dangerous way to write code that may cause
+                    // unexpected side effects, but *should* work fine in this instance.
+                    currentEntryState += 1;
+                    goToNextFields();
+                    reshowNextButton();
+                }
+            });
+            buttonSubLayout.addView(noButton);
+
+            linearLayout.addView(buttonSubLayout);
+
+            // Hide the next button; a selection is required here
+            findViewById(R.id.manualNextButton).setVisibility(View.INVISIBLE);
 
         } else if(field == "Damage Description"){
             // Damage Description label
             TextView t = new TextView(this);
             t.setText("Describe the damage in detail:");
+
+            // Damage Description edittext
+            EditText de = new EditText(this);
+            de.setMaxLines(15);
+            de.setLines(15);
+            // Change the style of the field, to make it look more like a table
+            de.setBackgroundResource(R.drawable.table_stylesheet);
             linearLayout.addView(t);
+
+            // Hacky way of making sure the keyboard isn't hidden when Next is pressed.
+            // Can probably be done in a better way
+            de.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+                @Override
+                public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                    if (actionId == EditorInfo.IME_ACTION_NEXT) {
+                        keyboardNextIsPressed = true;
+                    } else {
+                        keyboardNextIsPressed = false;
+                    }
+                    return false;
+                }
+            });
+
+            // Listen for when the area outside of the keyboard is pressed
+            de.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                @Override
+                public void onFocusChange(View v, boolean hasFocus) {
+                    if (!hasFocus && !keyboardNextIsPressed) {
+                        hideKeyboard(v);
+                    } else {
+                        keyboardNextIsPressed = false;
+                    }
+                }
+            });
+
+            linearLayout.addView(de);
 
         } else if(field == "Private Labels"){
             // Private Labels label
             TextView t = new TextView(this);
             t.setText("List any custom or private labels, if applicable");
             linearLayout.addView(t);
+
+            // Add a sub-layout with two buttons for adding and removing from the table
+            LinearLayout buttonSubLayout = new LinearLayout(this);
+            buttonSubLayout.setClickable(true);
+            buttonSubLayout.setFocusableInTouchMode(true);
+
+            Button addButton = new Button(this);
+            addButton.setText("Add");
+            buttonSubLayout.addView(addButton);
+
+            Button removeButton = new Button(this);
+            removeButton.setText("Remove");
+            buttonSubLayout.addView(removeButton);
+
+            linearLayout.addView(buttonSubLayout);
+
+            // Private Labels table
+            EditText ple = new EditText(this);
+            setTextTableRules(ple);
+            linearLayout.addView(ple);
 
         } else if(field == "Items Returned and Serials"){
             // Items Returned and Serials label
@@ -353,8 +502,10 @@ public class ManualReturnActivity extends AppCompatActivity {
 
             // Reason Returned text edit
             EditText re = new EditText(this);
-            re.setMaxLines(10);
-            re.setLines(10);
+            re.setMaxLines(15);
+            re.setLines(15);
+            // Change the style of the field, to make it look more like a table
+            re.setBackgroundResource(R.drawable.table_stylesheet);
 
             // Hacky way of making sure the keyboard isn't hidden when Next is pressed.
             // Can probably be done in a better way
@@ -381,6 +532,8 @@ public class ManualReturnActivity extends AppCompatActivity {
                     }
                 }
             });
+
+            linearLayout.addView(re);
 
         } else if(field == "Return Summary"){
             // Summary label
@@ -446,13 +599,10 @@ public class ManualReturnActivity extends AppCompatActivity {
 
         switch (fieldIDString){
             case "byField":     recievedBy = etObject.getText().toString().trim();
-                                displayToastMessage("byField saved as " + recievedBy);
                                 break;
             case "fromField":   recievedFrom = etObject.getText().toString().trim();
-                                displayToastMessage("fromField saved as " + recievedFrom);
                                 break;
             case "dateField":   recievedDate = etObject.getText().toString().trim();
-                                displayToastMessage("dateField saved as " + recievedDate);
                                 break;
             default:            //TODO: Error Handling
                                 break;
@@ -471,12 +621,21 @@ public class ManualReturnActivity extends AppCompatActivity {
 
                 generateFields(currentEntryState);
 
-                // Test Usage of Toast
-                //displayToastMessage("Index is " + currentEntryState + ", Size is " +dataEntryFields.size());
+                // Change the Next text to Submit if we're on the summary after incrementing
+                if (currentEntryState == dataEntryFields.size() - 1){
+                    Button nextButton = (Button)findViewById(R.id.manualNextButton);
+                    nextButton.setText("Submit");
+                }
             }
         } else {
-            // TODO: Put the manual return submission code here
+            fileManualReturn();
         }
+    }
+
+    // Send emails and update the database, while giving the user a
+    // progress pop-up window
+    public void fileManualReturn(){
+        displayToastMessage("This would bring up the return dialog; work in progress!");
     }
 
     // Called when the "Back" button is pressed.
@@ -485,6 +644,9 @@ public class ManualReturnActivity extends AppCompatActivity {
         if (currentEntryState != 0){
             currentEntryState -= 1;
             generateFields(currentEntryState);
+
+            // Reshow the next button in case it is hidden
+            reshowNextButton();
 
             // If index is 0 after subtracting, hide the back button
             if (currentEntryState == 0) {
@@ -517,6 +679,14 @@ public class ManualReturnActivity extends AppCompatActivity {
         String dateFormat = "MM/dd/yyyy";
         SimpleDateFormat sdf = new SimpleDateFormat(dateFormat, Locale.US);
         dp.setText(sdf.format(dateCalendar.getTime()));
+    }
+
+    // Moved to a method since the Next text is changed to Submit on the
+    // last page
+    public void reshowNextButton(){
+        Button nextButton = (Button)findViewById(R.id.manualNextButton);
+        nextButton.setVisibility(View.VISIBLE);
+        nextButton.setText("Next");
     }
 
     // Sets various rules on a passed in EditText object to make the keypad exitable
