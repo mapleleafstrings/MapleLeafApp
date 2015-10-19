@@ -40,36 +40,34 @@ public class updateSQLDatabase extends AsyncTask<String, Void, String> {
             String link = "http://steveseifried.com/mls/returnApp/manualReturnSubmit.php";
 
             // Gather the variables to send to the php file listed above
-            String data = URLEncoder.encode("recievedDate", "UTF-8")
-                    + "=" + URLEncoder.encode("1/11/1111");
-            data += URLEncoder.encode("recievedBy", "UTF-8")
-                    + "=" + URLEncoder.encode("John Doe", "UTF-8");
-            data += URLEncoder.encode("recievedFrom", "UTF-8")
-                    + "=" + URLEncoder.encode("Sample Customers Inc", "UTF-8");
-            data += URLEncoder.encode("carrierName", "UTF-8")
-                    + "=" + URLEncoder.encode("Generic Carrier", "UTF-8");
-            data += URLEncoder.encode("boxNumber", "UTF-8")
-                    + "=" + URLEncoder.encode("9", "UTF-8");
-            data += URLEncoder.encode("trackingNumbers", "UTF-8")
-                    + "=" + URLEncoder.encode("fixTrackingNumbers", "UTF-8");
-            data += URLEncoder.encode("boxDimensions", "UTF-8")
-                    + "=" + URLEncoder.encode("fixBoxDimensions", "UTF-8");
-            data += URLEncoder.encode("isDamaged", "UTF-8")
-                    + "=" + URLEncoder.encode("false", "UTF-8");
-            data += URLEncoder.encode("damageDescription", "UTF-8")
-                    + "=" + URLEncoder.encode("Sample Description", "UTF-8");
-            data += URLEncoder.encode("privateLabels", "UTF-8")
-                    + "=" + URLEncoder.encode("Fix Private Labels", "UTF-8");
-            data += URLEncoder.encode("returnedItems", "UTF-8")
-                    + "=" + URLEncoder.encode("Fix Returned Items", "UTF-8");
-            data += URLEncoder.encode("serialNumbers", "UTF-8")
-                    + "=" + URLEncoder.encode("Fix Serial Numbers", "UTF-8");
-            data += URLEncoder.encode("returnReason", "UTF-8")
-                    + "=" + URLEncoder.encode("Sample Return Reason", "UTF-8");
-//            String data = URLEncoder.encode("username", "UTF-8")
-//                    + "=" + URLEncoder.encode(username, "UTF-8");
-//            data += "&" + URLEncoder.encode("password", "UTF-8")
-//                    + "=" + URLEncoder.encode(password, "UTF-8");
+            String data = URLEncoder.encode("test", "UTF-8")
+                    + "=" + URLEncoder.encode("This is a Test Message", "UTF-8");
+//            String data = URLEncoder.encode("recievedDate", "UTF-8")
+//                    + "=" + URLEncoder.encode("1/11/1111", "UTF-8");
+//            data += URLEncoder.encode("recievedBy", "UTF-8")
+//                    + "=" + URLEncoder.encode("John Doe", "UTF-8");
+//            data += URLEncoder.encode("recievedFrom", "UTF-8")
+//                    + "=" + URLEncoder.encode("Sample Customers Inc", "UTF-8");
+//            data += URLEncoder.encode("carrierName", "UTF-8")
+//                    + "=" + URLEncoder.encode("Generic Carrier", "UTF-8");
+//            data += URLEncoder.encode("boxNumber", "UTF-8")
+//                    + "=" + URLEncoder.encode("9", "UTF-8");
+//            data += URLEncoder.encode("trackingNumbers", "UTF-8")
+//                    + "=" + URLEncoder.encode("fixTrackingNumbers", "UTF-8");
+//            data += URLEncoder.encode("boxDimensions", "UTF-8")
+//                    + "=" + URLEncoder.encode("fixBoxDimensions", "UTF-8");
+//            data += URLEncoder.encode("isDamaged", "UTF-8")
+//                    + "=" + URLEncoder.encode("false", "UTF-8");
+//            data += URLEncoder.encode("damageDescription", "UTF-8")
+//                    + "=" + URLEncoder.encode("Sample Description", "UTF-8");
+//            data += URLEncoder.encode("privateLabels", "UTF-8")
+//                    + "=" + URLEncoder.encode("Fix Private Labels", "UTF-8");
+//            data += URLEncoder.encode("returnedItems", "UTF-8")
+//                    + "=" + URLEncoder.encode("Fix Returned Items", "UTF-8");
+//            data += URLEncoder.encode("serialNumbers", "UTF-8")
+//                    + "=" + URLEncoder.encode("Fix Serial Numbers", "UTF-8");
+//            data += URLEncoder.encode("returnReason", "UTF-8")
+//                    + "=" + URLEncoder.encode("Sample Return Reason", "UTF-8");
 
             URL url = new URL(link);
             URLConnection conn = url.openConnection();
@@ -94,7 +92,7 @@ public class updateSQLDatabase extends AsyncTask<String, Void, String> {
 
             String message = sb.toString();
 
-            return sb.toString();
+            return message;
 
         } catch (IOException e) {
             String error = "Error: " + e.getMessage();

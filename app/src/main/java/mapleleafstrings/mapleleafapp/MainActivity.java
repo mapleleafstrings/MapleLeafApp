@@ -253,7 +253,7 @@ public class MainActivity extends AppCompatActivity {
             // TODO: Make the name make more sense and add error handling
             // Possible error handling solution at:
             //   http://stackoverflow.com/questions/1739515/asynctask-and-error-handling-on-android
-            new RetrieveBackgroundTask().execute(); // Working but has no GUI error feedback
+            new RetrieveBackgroundTask("This is a test email").execute(); // Working but has no GUI error feedback
         } catch (Exception e) {
             Log.e("SendEmail", e.getMessage(), e);
         }

@@ -14,6 +14,11 @@ import android.widget.Toast;
 public class RetrieveBackgroundTask extends AsyncTask<String, Integer, Long> {
 
     private Exception exception;
+    String messageBody;
+
+    public RetrieveBackgroundTask(String body){
+        messageBody = body;
+    }
 
     @Override
     protected Long doInBackground(String... urls){
@@ -24,7 +29,7 @@ public class RetrieveBackgroundTask extends AsyncTask<String, Integer, Long> {
         m.setTo(toArr);
         m.setFrom("returns@mapleleafstrings.com");
         m.setSubject("Sample Return Email");
-        m.setBody("Email body.");
+        m.setBody(messageBody);
 
         try {
             if(m.send()) {
